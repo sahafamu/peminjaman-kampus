@@ -1,0 +1,90 @@
+/* Hallmark · shape: app screen · theme: Ink, same tokens and components as mahasiswa-ketersediaan.php · page-only rules below use tokens from app.css */
+/* Hallmark · answered F7 · every input and select in the system shares one field recipe on purpose so the form matches mahasiswa-ketersediaan.php */
+.cols--form {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+
+.fgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.fgrid .wide {
+  grid-column: 1 / -1;
+}
+
+input[type="time"] {
+  min-height: 40px;
+  width: 100%;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius-control);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  outline: 2px solid transparent;
+  outline-offset: -3px;
+}
+
+input[type="time"]:focus-visible {
+  outline-color: var(--color-focus);
+}
+
+.warn {
+  grid-column: 1 / -1;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-control);
+  box-shadow: inset 0 0 0 1px var(--color-error);
+  color: var(--color-error);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.warn[data-ok] {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+  color: var(--color-accent-soft-ink);
+  background: var(--color-accent-soft);
+}
+
+.warn[data-idle] {
+  box-shadow: inset 0 0 0 1px var(--color-rule);
+  color: var(--color-muted);
+  font-weight: 400;
+  background: transparent;
+}
+
+.mine {
+  background: var(--color-accent-soft);
+  margin-inline: calc(-1 * var(--space-sm));
+  padding-inline: var(--space-sm) !important;
+  border-radius: var(--radius-control);
+}
+
+.mine.is-bad {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-error);
+}
+
+.done {
+  display: grid;
+  gap: var(--space-sm);
+  justify-items: start;
+}
+
+.done__act {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 70rem) {
+  .cols--form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .fgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

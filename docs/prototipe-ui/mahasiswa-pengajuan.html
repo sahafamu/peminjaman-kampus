@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Pengajuan Peminjaman</title>
+  <meta name="description"
+    content="Form pengajuan peminjaman ruang untuk mahasiswa, dengan peringatan langsung bila waktu bentrok dengan jadwal kuliah. Data contoh.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&family=IBM+Plex+Mono:wght@400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <style>
+    /* Hallmark · shape: app screen · theme: Ink, same tokens and components as mahasiswa-ketersediaan.html · page-only rules below use tokens from app.css */
+    /* Hallmark · dismissed 70 · the confirmation says the pengajuan is saved only in this browser as data contoh and goes to no admin; the booking really lands in localStorage and shows in the admin queue */
+    /* Hallmark · answered F7 · every input and select in the system shares one field recipe on purpose so the form matches mahasiswa-ketersediaan.html */
+    .cols--form {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+
+    .fgrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+
+    .fgrid .wide {
+      grid-column: 1 / -1;
+    }
+
+    input[type="time"] {
+      min-height: 40px;
+      width: 100%;
+      padding: 0 var(--space-sm);
+      border: 1px solid var(--color-muted);
+      border-radius: var(--radius-control);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      outline: 2px solid transparent;
+      outline-offset: -3px;
+    }
+
+    input[type="time"]:focus-visible {
+      outline-color: var(--color-focus);
+    }
+
+    .warn {
+      grid-column: 1 / -1;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-control);
+      box-shadow: inset 0 0 0 1px var(--color-error);
+      color: var(--color-error);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .warn[data-ok] {
+      box-shadow: inset 0 0 0 1px var(--color-accent);
+      color: var(--color-accent-soft-ink);
+      background: var(--color-accent-soft);
+    }
+
+    .warn[data-idle] {
+      box-shadow: inset 0 0 0 1px var(--color-rule);
+      color: var(--color-muted);
+      font-weight: 400;
+      background: transparent;
+    }
+
+    .mine {
+      background: var(--color-accent-soft);
+      margin-inline: calc(-1 * var(--space-sm));
+      padding-inline: var(--space-sm) !important;
+      border-radius: var(--radius-control);
+    }
+
+    .mine.is-bad {
+      background: transparent;
+      box-shadow: inset 0 0 0 1px var(--color-error);
+    }
+
+    .done {
+      display: grid;
+      gap: var(--space-sm);
+      justify-items: start;
+    }
+
+    .done__act {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    @media (max-width: 70rem) {
+      .cols--form {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 40rem) {
+      .fgrid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="side" id="side" aria-label="Navigasi"></aside>
+    <main class="main" id="isi">
+      <header class="top">
+        <div class="top__l">
+          <button class="btn btn--icon menu-btn" type="button" id="menu-btn" aria-label="Buka menu"
+            aria-expanded="false"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg></button>
+          <div>
+            <h1>Form pengajuan</h1>
+            <p>Pilih ruang dan waktu. Bentrok dengan jadwal kuliah langsung diberi tahu.</p>
+          </div>
+        </div>
+        <a class="btn" href="mahasiswa-ketersediaan.html">Lihat kalender</a>
+      </header>
+
+      <div class="cols cols--form">
+        <section class="well panel" aria-labelledby="f-h">
+          <div class="panel__head">
+            <h2 id="f-h">Data peminjaman</h2>
+          </div>
+          <form class="fgrid" id="form" data-endpoint="" novalidate>
+            <div class="field wide"><label for="f-ruang">Ruang</label><select id="f-ruang" name="ruang"></select></div>
+            <div class="field wide"><label for="f-tgl">Tanggal</label><input id="f-tgl" name="tanggal" type="date"
+                required></div>
+            <div class="field"><label for="f-mulai">Mulai</label><input id="f-mulai" name="mulai" type="time"
+                min="07:00" max="17:50" step="600" required></div>
+            <div class="field"><label for="f-selesai">Selesai</label><input id="f-selesai" name="selesai" type="time"
+                min="07:10" max="18:00" step="600" required></div>
+            <div class="field wide"><label for="f-perlu">Keperluan</label><input id="f-perlu" name="keperluan"
+                type="text" required></div>
+            <div class="field wide" id="f-file-box" hidden><label for="f-file">Surat pengajuan (PDF, maksimal 2 MB)</label><input id="f-file" name="surat" type="file" accept=".pdf,application/pdf"></div>
+<p class="note wide" id="f-surat" hidden>Peminjaman lapangan dan auditorium memerlukan surat pengajuan.</p>
+            <p class="warn" id="warn" role="alert" data-idle>Pilih ruang, tanggal, dan jam untuk memeriksa bentrok.</p>
+            <p class="form__err" id="f-err" role="alert"></p>
+            <div class="form__act">
+              <button class="btn" type="reset" id="f-reset">Kosongkan</button>
+              <button class="btn btn--primary" type="submit" id="f-kirim">Kirim pengajuan</button>
+            </div>
+          </form>
+          <div class="done" id="done" hidden>
+            <h2>Pengajuan masuk antrean</h2>
+            <p id="done-msg"></p>
+            <div class="done__act"><a class="btn btn--primary" href="mahasiswa-dashboard.html#riwayat">Lihat
+                status</a><button class="btn" type="button" id="lagi">Ajukan lagi</button></div>
+          </div>
+        </section>
+
+        <section class="well panel" aria-labelledby="j-h">
+          <div class="panel__head">
+            <h2 id="j-h">Jadwal ruang hari itu</h2><span class="note" id="j-sub"></span>
+          </div>
+          <ul class="list" id="jadwal"></ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="shell.js"></script>
+  <script>
+    (() => {
+      'use strict';
+      PKshell('mahasiswa');
+      const { MIN0, MIN1, ROOMS, fm, esc, parseISO, iso, addDays, fmtDate, todayISO } = PK;
+      const $ = (s) => document.querySelector(s);
+      const hm = (m) => PK.pad(Math.floor(m / 60)) + ':' + PK.pad(m % 60);
+      const toMin = (v) => { if (!/^\d{2}:\d{2}$/.test(v || '')) return null; const [h, m] = v.split(':').map(Number); return h * 60 + m; };
+
+      $('#f-ruang').innerHTML = ROOMS.map((r) => `<option value="${r.id}">${esc(r.name)}</option>`).join('');
+      $('#f-tgl').min = todayISO;
+
+      const q = new URLSearchParams(location.search);
+      const firstOpen = () => { let d = parseISO(todayISO); while (d.getDay() === 0) d = addDays(d, 1); return iso(d); };
+      const reset = () => {
+        $('#f-ruang').value = ROOMS.some((r) => r.id === q.get('ruang')) ? q.get('ruang') : 'r101';
+        $('#f-tgl').value = q.get('tanggal') || firstOpen();
+        $('#f-mulai').value = q.get('mulai') || '09:00'; $('#f-selesai').value = q.get('selesai') || '10:40';
+        $('#f-perlu').value = ''; $('#f-file').value = '';
+      };
+      reset();
+
+      /* membaca isian: kembalikan nilai atau pesan kesalahan */
+      function read() {
+        const room = $('#f-ruang').value, date = $('#f-tgl').value, s = toMin($('#f-mulai').value), e = toMin($('#f-selesai').value);
+        return { room, date, s, e };
+      }
+      function problem(v) {
+        if (!v.date) return 'Pilih tanggal.';
+        if (v.date < todayISO) return 'Tanggal itu sudah lewat.';
+        if (parseISO(v.date).getDay() === 0) return 'Kampus tidak melayani peminjaman hari Minggu.';
+        if (v.s == null || v.e == null) return 'Isi jam mulai dan jam selesai.';
+        if (v.s < MIN0 || v.e > MIN1) return 'Peminjaman hanya bisa antara ' + fm(MIN0) + ' dan ' + fm(MIN1) + '.';
+        if (v.e <= v.s) return 'Jam selesai harus sesudah jam mulai.';
+        return null;
+      }
+
+      let blocked = true;
+      function check() {
+        const v = read(), w = $('#warn'), room = PK.roomOf(v.room);
+        $('#f-surat').hidden = $('#f-file-box').hidden = !PK.needsLetter(room);
+        const bad = problem(v);
+        w.removeAttribute('data-ok'); w.removeAttribute('data-idle');
+        let hit = [];
+        if (bad) { w.textContent = bad; blocked = true; }
+        else {
+          hit = PK.blockers(v.room, v.date, v.s, v.e);
+          if (hit.length) {
+            blocked = true;
+            w.textContent = hit.map((h) => (h.kind === 'kuliah' ? 'Bentrok dengan jadwal kuliah: ' : 'Bentrok dengan peminjaman yang sudah disetujui: ') + h.title + ', ' + fm(h.s) + ' sampai ' + fm(h.e) + '.').join(' ');
+          } else { blocked = false; w.setAttribute('data-ok', ''); w.textContent = 'Tidak bentrok. ' + room.name + ' kosong pada ' + fm(v.s) + ' sampai ' + fm(v.e) + '.'; }
+        }
+        $('#f-kirim').setAttribute('aria-disabled', String(blocked));
+        $('#f-kirim').classList.toggle('is-blocked', blocked);
+        [$('#f-mulai'), $('#f-selesai')].forEach((i) => (hit.length || (bad && v.s != null && v.e != null && v.e <= v.s)) ? i.setAttribute('aria-invalid', 'true') : i.removeAttribute('aria-invalid'));
+        renderDay(v, hit.length > 0 || !!bad);
+        return { v, bad, hit };
+      }
+      function renderDay(v, isBad) {
+        const room = PK.roomOf(v.room);
+        $('#j-sub').textContent = room.name + (v.date ? ', ' + fmtDate(parseISO(v.date), { weekday: 'long', day: 'numeric', month: 'short' }) : '');
+        if (!v.date) { $('#jadwal').innerHTML = ''; return; }
+        const its = PK.itemsFor(v.room, v.date, PK.dowOf(parseISO(v.date)));
+        const rows = its.map((i) => ({ s: i.s, html: `<li><div><b>${esc(i.title)}</b><small class="fig">${fm(i.s)}-${fm(i.e)}</small></div>${i.kind === 'kuliah' ? '<span class="tag">Kuliah tetap</span>' : i.kind === 'pinjam' ? '<span class="tag tag--in">Dipinjam</span>' : '<span class="tag tag--out">Diajukan</span>'}</li>` }));
+        if (v.s != null && v.e != null && v.e > v.s) rows.push({ s: v.s, html: `<li class="mine${isBad ? ' is-bad' : ''}"><div><b>Pilihanmu</b><small class="fig">${fm(v.s)}-${fm(v.e)}</small></div><span class="tag ${isBad ? 'tag--late' : 'tag--on'}">${isBad ? 'Bentrok' : 'Aman'}</span></li>` });
+        rows.sort((a, b) => a.s - b.s);
+        $('#jadwal').innerHTML = rows.length ? rows.map((r) => r.html).join('') : '<li><div class="note">Belum ada jadwal pada hari ini. Semua jam kosong.</div></li>';
+      }
+
+      ['f-ruang', 'f-tgl', 'f-mulai', 'f-selesai'].forEach((id) => { $('#' + id).addEventListener('input', check); $('#' + id).addEventListener('change', check); });
+      $('#f-reset').addEventListener('click', () => setTimeout(() => { reset(); $('#f-err').textContent = ''; check(); }, 0));
+
+      $('#form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const { v, bad, hit } = check(), perlu = $('#f-perlu'), err = $('#f-err');
+        err.textContent = ''; perlu.removeAttribute('aria-invalid'); $('#f-file').removeAttribute('aria-invalid');
+        if (bad) return (err.textContent = bad);
+        if (hit.length) { err.textContent = 'Pengajuan tidak bisa dikirim selama masih bentrok. Ubah jam atau ruang.'; $('#f-mulai').focus(); return; }
+        if (!perlu.value.trim()) { perlu.setAttribute('aria-invalid', 'true'); err.textContent = 'Tulis keperluan peminjaman.'; perlu.focus(); return; }
+        const file = $('#f-file').files[0], lerr = PK.checkLetter(PK.roomOf(v.room), file);
+        if (lerr) { $('#f-file').setAttribute('aria-invalid', 'true'); err.textContent = lerr; $('#f-file').focus(); return; }
+        const withLetter = file && PK.needsLetter(PK.roomOf(v.room));
+        const letterData = withLetter ? await PK.readAsDataURL(file).catch(() => null) : null;
+        if (withLetter && !letterData) { err.textContent = 'Surat tidak bisa dibaca. Pilih berkasnya lagi.'; $('#f-file').focus(); return; }
+        PK.store.bookings.push({ id: PK.nextId(), date: v.date, s: v.s, e: v.e, room: v.room, title: perlu.value.trim(), status: 'diajukan', by: PK.ME, ...(withLetter ? { letter: file.name, letterData } : {}) });
+        if (!PK.save()) { PK.store.bookings.pop(); err.textContent = 'Penyimpanan browser penuh, surat tidak tersimpan. Pakai berkas yang lebih kecil.'; $('#f-file').focus(); return; }
+        $('#form').hidden = true; $('#done').hidden = false;
+        $('#done-msg').textContent = PK.roomOf(v.room).name + ', ' + fmtDate(parseISO(v.date), { weekday: 'long', day: 'numeric', month: 'long' }) + ', ' + fm(v.s) + ' sampai ' + fm(v.e) + '. Admin akan memeriksanya. Ini data contoh yang tersimpan di browser ini saja.';
+        $('#done h2').setAttribute('tabindex', '-1'); $('#done h2').focus();
+        renderDay(v, false);
+      });
+      $('#lagi').addEventListener('click', () => { $('#done').hidden = true; $('#form').hidden = false; reset(); check(); $('#f-ruang').focus(); });
+
+      check();
+    })();
+  </script>
+</body>
+
+</html>

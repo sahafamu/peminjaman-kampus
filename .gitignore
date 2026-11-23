@@ -1,0 +1,13 @@
+# pengaturan lokal (berisi password database)
+config/config.php
+
+# surat PDF yang diunggah pengguna
+storage/surat/*
+!storage/surat/.gitkeep
+
+# berkas editor dan sistem
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

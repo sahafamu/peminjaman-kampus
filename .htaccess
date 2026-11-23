@@ -1,0 +1,7 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# dokumen dan skema database tidak untuk dibuka dari browser
+<FilesMatch "\.(md|sql)$">
+  Require all denied
+</FilesMatch>
