@@ -74,7 +74,7 @@ Beberapa aturan di [docs/BRIEF.md](docs/BRIEF.md) masih berstatus asumsi sementa
 C:\xampp\php\php.exe -v
 ```
 
-Ganti `C:\xampp` kalau XAMPP-mu terpasang di drive lain. Kode memakai fitur PHP 8.1 (misalnya tipe `never`), jadi versi di bawah 8.1 tidak akan jalan.
+Ganti `C:\xampp` kalau XAMPP-mu terpasang di drive lain. Kode memakai fitur PHP 8.1 (misalnya tipe `never`), jadi versi di bawah 8.1 tidak akan jalan. Aplikasi ini baru diuji di **PHP 8.6.0**. Batas 8.1 didasarkan pada fitur bahasa yang dipakai, bukan pengujian di 8.1 sampai 8.5. Kalau ada error aneh di versi lain, sebutkan versi PHP-mu saat melapor.
 
 ## Pasang dan jalankan (pertama kali)
 
@@ -164,7 +164,12 @@ cd D:\projek-baru\peminjaman-kampus
 C:\xampp\php\php.exe -S localhost:8000
 ```
 
-Lalu buka `http://localhost:8000/install/` dan `http://localhost:8000/`. Catatan: server bawaan PHP tidak membaca `.htaccess`, jadi folder yang seharusnya tertutup (`app/`, `config/`, `database/`, `storage/`) bisa dibuka dari browser. Pakai cara ini hanya untuk pengembangan di komputermu sendiri, jangan untuk server. Cara ini belum saya uji di semua halaman, jadi kalau ada yang aneh, kembali ke cara htdocs.
+Lalu buka `http://localhost:8000/install/` dan `http://localhost:8000/`. Catatan: server bawaan PHP tidak membaca `.htaccess`, jadi folder yang seharusnya tertutup (`app/`, `config/`, `database/`, `storage/`, `docs/`) bisa dibuka dari browser. Berkas SQL dan dokumen bisa diunduh, dan **surat PDF di `storage/surat/` bisa dibuka lewat alamat langsung** oleh siapa saja yang tahu namanya. Karena itu:
+
+- Pakai cara ini hanya untuk pengembangan di komputermu sendiri, jangan untuk server.
+- Jangan mengunggah surat asli saat memakai cara ini, cukup berkas PDF percobaan.
+
+Yang sudah dicoba: Beranda, halaman masuk, dan pengalihan ke halaman masuk berjalan di cara ini. Halaman lain belum diuji, jadi kalau ada yang aneh, kembali ke cara htdocs.
 
 ## Akun contoh
 
@@ -208,7 +213,7 @@ Data jadwal dan barang saat ini hanya contoh dan harus diganti ketika data kampu
 | Akun admin dan mahasiswa contoh | Ganti kata sandinya, atau hapus barisnya di tabel `users`. |
 | Semua data contoh sekaligus | Jalankan `C:\xampp\php\php.exe install\index.php --reset`. **Perintah ini menghapus semua data** (tabel, peminjaman, dan surat PDF) lalu mengisi ulang data contoh. |
 
-Jadwal kuliah dan peminjaman contoh yang dibuat installer mengikuti hari Senin minggu itu, jadi tanggalnya selalu terlihat segar setelah `--reset`.
+Peminjaman ruang dan catatan barang contoh yang dibuat installer mengikuti hari Senin minggu itu, jadi tanggalnya selalu terlihat segar setelah `--reset`. Jadwal kuliah tetap sama setiap minggu, karena memang jadwal mingguan.
 
 ## Bekerja bersama di tim (Git)
 
